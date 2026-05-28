@@ -93,7 +93,7 @@ description: "Task list for alert notifications feature"
 
 ## Phase 5: User Story 3 - Review Operations in Admin View (Priority: P2)
 
-**Goal**: Admin can inspect recent event evaluations, delivery attempts, and failures without direct database access.
+**Goal**: Admin can inspect recent notification attempts, related event details, and failures without direct database access.
 
 **Independent Test**: After demo events run, open the admin view and verify recent attempts include status, channel, alert name, event title, and failure reason.
 

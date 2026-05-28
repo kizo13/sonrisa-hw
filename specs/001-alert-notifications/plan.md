@@ -8,11 +8,11 @@
 
 Build a small single-tenant alerting app that lets an alert manager configure
 event-based alerts, evaluate deterministic demo events, send or fake email and
-Slack notifications, and review delivery history from an admin view. The planned
-implementation is a single Cloudflare Worker-hosted TypeScript web app with D1
-storage and adapter-style notification channels. The MVP intentionally avoids
-real external event feeds, full authentication, queues, and generalized plugin
-systems.
+Slack notifications, and review delivery history with related event details
+from an admin view. The planned implementation is a single Cloudflare
+Worker-hosted TypeScript web app with D1 storage and adapter-style notification
+channels. The MVP intentionally avoids real external event feeds, full
+authentication, queues, and generalized plugin systems.
 
 ## Technical Context
 

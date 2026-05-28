@@ -62,16 +62,16 @@ selected channel with the expected message content.
 
 ### User Story 3 - Review Operations in Admin View (Priority: P2)
 
-An admin reviews alert rules, recent event evaluations, delivery attempts, and
-failures from one operational view.
+An admin reviews alert rules, recent notification attempts, related event
+details, and failures from one operational view.
 
 **Why this priority**: The brief explicitly asks for an admin view, and the
 interview task benefits from visible evidence of system behavior and failure
 handling.
 
 **Independent Test**: Can be tested by opening the admin view after configured
-rules and demo events exist, then confirming recent evaluations and delivery
-results are visible without inspecting logs or storage directly.
+rules and demo events exist, then confirming recent delivery results and related
+event details are visible without inspecting logs or storage directly.
 
 **Acceptance Scenarios**:
 
@@ -136,8 +136,8 @@ and Slack.
   alert and event.
 - **FR-010**: System MUST record delivery status, provider response summary,
   and error details for each notification attempt.
-- **FR-011**: System MUST show recent event evaluations and notification
-  attempts in the admin view.
+- **FR-011**: System MUST show recent notification attempts, related event
+  details, and failure details in the admin view.
 - **FR-012**: System MUST allow notification methods beyond email and Slack to
   be added without changing the meaning of existing alert rules.
 - **FR-013**: System MUST provide a deterministic demo path that works without
