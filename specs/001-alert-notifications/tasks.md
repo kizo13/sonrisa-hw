@@ -30,12 +30,12 @@ description: "Task list for alert notifications feature"
 
 **Critical**: No user story work should begin until this phase is complete.
 
-- [ ] T006 [P] Define shared domain types for alert rules, events, and attempts in `src/domain/types.ts`
-- [ ] T007 [P] Define notification channel payload and result types in `src/domain/notifications.ts`
-- [ ] T008 [P] Create deterministic test fixtures for alerts and demo events in `tests/fixtures/alerts.ts`
-- [ ] T009 Implement D1 repository wrapper and transaction helpers in `src/storage/repository.ts`
-- [ ] T010 Implement API error and JSON response helpers in `src/worker/http.ts`
-- [ ] T011 Implement fake notification channel adapter in `src/channels/fake.ts`
+- [x] T006 [P] Define shared domain types for alert rules, events, and attempts in `src/domain/types.ts`
+- [x] T007 [P] Define notification channel payload and result types in `src/domain/notifications.ts`
+- [x] T008 [P] Create deterministic test fixtures for alerts and demo events in `tests/fixtures/alerts.ts`
+- [x] T009 Implement D1 repository wrapper and transaction helpers in `src/storage/repository.ts`
+- [x] T010 Implement API error and JSON response helpers in `src/worker/http.ts`
+- [x] T011 Implement fake notification channel adapter in `src/channels/fake.ts`
 
 **Checkpoint**: Foundation ready; user story implementation can begin.
 

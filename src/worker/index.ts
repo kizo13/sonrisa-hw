@@ -1,3 +1,5 @@
+import { jsonResponse } from "./http";
+
 export interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
@@ -9,7 +11,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/health") {
-      return Response.json({
+      return jsonResponse({
         ok: true,
         service: "alert-notifications",
         deliveryMode: env.DELIVERY_MODE
