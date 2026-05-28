@@ -47,6 +47,36 @@ npm run lint
 npm run build
 ```
 
+## Recorded Validation Output (2026-05-28)
+
+```
+$ npm test
+ Test Files  10 passed (10)
+      Tests  45 passed (45)
+   Duration  342ms
+
+$ npm run typecheck
+(no output — 0 errors)
+
+$ npm run lint
+(no output — 0 warnings)
+```
+
+### Test coverage by area
+
+| File | Tests |
+|------|-------|
+| `tests/unit/alertRules.test.ts` | Alert rule validation |
+| `tests/unit/matcher.test.ts` | Event/rule matching logic |
+| `tests/unit/notifications.test.ts` | Duplicate suppression, attempt creation |
+| `tests/unit/channels.test.ts` | Email/Slack fake and real adapters |
+| `tests/unit/events.test.ts` | Demo event candidate validation |
+| `tests/unit/channel-contract.test.ts` | Third-channel registry contract |
+| `tests/integration/alertRepository.test.ts` | Alert CRUD repository |
+| `tests/integration/admin-alerts.test.ts` | Admin form behavior |
+| `tests/integration/attempts-api.test.ts` | Attempts JOIN query |
+| `tests/integration/admin-history.test.ts` | History view status labels |
+
 ## Cloudflare Deployment Plan
 
 ```bash

@@ -120,11 +120,11 @@ description: "Task list for alert notifications feature"
 
 ### Tests for User Story 4
 
-- [ ] T035 [P] [US4] Add third-channel contract test in `tests/unit/channel-contract.test.ts`
+- [x] T035 [P] [US4] Add third-channel contract test in `tests/unit/channel-contract.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T036 [US4] Implement minimal channel registry in `src/channels/index.ts`
+- [x] T036 [US4] Implement minimal channel registry in `src/channels/index.ts`
 
 **Checkpoint**: Future-channel requirement is evidenced without a plugin system.
 
@@ -134,10 +134,10 @@ description: "Task list for alert notifications feature"
 
 **Purpose**: Finish documentation, demo reliability, and validation evidence.
 
-- [ ] T037 [P] Update project README with architecture, tradeoffs, and demo steps in `README.md`
-- [ ] T038 [P] Add local demo seed command or fixture in `src/worker/demoEvents.ts`
-- [ ] T039 Run and record validation commands in `specs/001-alert-notifications/quickstart.md`
-- [ ] T040 Record AI review notes, rejected shortcuts, and time cuts in `specs/001-alert-notifications/research.md`
+- [x] T037 [P] Update project README with architecture, tradeoffs, and demo steps in `README.md`
+- [x] T038 [P] Add local demo seed command or fixture in `src/worker/demoEvents.ts`
+- [x] T039 Run and record validation commands in `specs/001-alert-notifications/quickstart.md`
+- [x] T040 Record AI review notes, rejected shortcuts, and time cuts in `specs/001-alert-notifications/research.md`
 
 ---
 

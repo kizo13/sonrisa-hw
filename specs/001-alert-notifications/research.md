@@ -180,6 +180,55 @@ Cron Trigger --> Worker scheduled handler --> fetch configured feed or seed demo
 - **Authentication**: Use local/trusted admin mode or a simple shared secret if
   deployed publicly; full auth is out of scope.
 
+## AI Output Review Notes (2026-05-28)
+
+### Accepted outputs (no changes needed)
+
+- Channel adapter interface and fake-first pattern — matches the brief's
+  extensibility requirement and is small enough that no abstraction overhead
+  was introduced.
+- D1 repository layer with raw SQL — avoids ORM dependency; SQL is readable
+  and directly testable with fake repository instances.
+- TDD-first task ordering — tests were written before each implementation phase;
+  no implementation code was accepted without a corresponding test.
+- Duplicate suppression via SQL UNIQUE constraint — simpler and more reliable
+  than application-level checks alone; correct approach for the stated goal.
+
+### Reviewed and adjusted outputs
+
+- **Routes.ts channel map → registry**: Initial output embedded a private
+  `createChannelMap` function. Replaced with `createChannelRegistry` from
+  `src/channels/index.ts` so the extension seam is explicit and testable
+  (US4 requirement).
+- **`NotificationAttemptDetail` placement**: AI initially suggested defining
+  the JOIN result type in `types.ts`. Kept it in `repository.ts` instead
+  because it is a query view type, not a stored domain entity.
+- **Admin history test scope**: First draft proposed testing the React
+  component with DOM queries. Changed to testing `historyView.ts` utility
+  functions instead — same coverage, no DOM setup, consistent with the
+  `admin-alerts.test.ts` pattern already in the project.
+
+### Rejected shortcuts
+
+- **Skipping the channel registry (US4)**: The brief explicitly asks for
+  a future-channel seam. Keeping the local map would pass all tests but
+  would not evidence the extensibility requirement.
+- **Inlining attempt detail mapping in routes.ts**: Suggested during
+  Phase 5 to avoid adding a `fromNotificationAttemptDetailRow` converter.
+  Rejected to keep mapping consistent with the existing `fromAlertRuleRow`
+  pattern.
+- **Using `crypto.randomUUID()` for attempt IDs**: Replaced with
+  deterministic IDs (`attempt_{alertId}_{eventId}_{channel}`) to keep
+  tests predictable without mocking.
+
+### Time cuts made
+
+- Real email provider (Resend/SendGrid): fake adapter recorded; seam documented
+  in README.
+- Scheduled evaluation: `scheduled.ts` stub left in place; `demoEvents.ts`
+  exports payloads ready for a cron handler.
+- Production auth: out of scope; noted as a known gap in README.
+
 ## Source Notes
 
 - Cloudflare Workers limits and pricing: https://developers.cloudflare.com/workers/platform/limits/

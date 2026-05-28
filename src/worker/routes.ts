@@ -4,11 +4,12 @@ import {
   validateAlertRuleInput,
   validateAlertRulePatchInput
 } from "../domain/alertRules";
+import { createChannelRegistry } from "../channels/index";
 import { createEmailChannel } from "../channels/email";
 import { createSlackChannel } from "../channels/slack";
 import { validateDemoEventInput } from "../domain/events";
 import { findMatchingAlertRules } from "../domain/matcher";
-import { type NotificationChannel, notifyAlertForEvent } from "../domain/notifications";
+import { notifyAlertForEvent } from "../domain/notifications";
 import {
   createAlertRuleRepository,
   createEventRepository,
@@ -113,12 +114,15 @@ async function dispatchApiRequest(request: Request, env: ApiEnv): Promise<Respon
     const event = await events.upsertEventCandidate(validation.value);
     const activeRules = await events.listActiveAlertRulesByCategory(event.category);
     const matchingRules = findMatchingAlertRules(activeRules, event);
-    const channels = createChannelMap(env);
+    const channels = createChannelRegistry([
+      createEmailChannel(),
+      createSlackChannel({ webhookUrl: env.DELIVERY_MODE === "real" ? env.SLACK_WEBHOOK_URL : undefined })
+    ]);
     let createdAttempts = 0;
     let skippedDuplicates = 0;
 
     for (const alert of matchingRules) {
-      const channel = channels.get(alert.channel);
+      const channel = channels.resolve(alert.channel);
 
       if (!channel) {
         continue;
@@ -166,11 +170,3 @@ async function dispatchApiRequest(request: Request, env: ApiEnv): Promise<Respon
   return notFound("API route not found.");
 }
 
-function createChannelMap(env: ApiEnv): Map<string, NotificationChannel> {
-  const useRealDelivery = env.DELIVERY_MODE === "real";
-
-  return new Map<string, NotificationChannel>([
-    ["email", createEmailChannel()],
-    ["slack", createSlackChannel({ webhookUrl: useRealDelivery ? env.SLACK_WEBHOOK_URL : undefined })]
-  ]);
-}
