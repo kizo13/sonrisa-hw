@@ -271,7 +271,7 @@ async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T
   const body = (await response.json()) as T | ApiErrorResponse;
 
   if (!response.ok) {
-    throw new Error("error" in body ? body.error.message : "Request failed.");
+    throw new Error(isApiErrorResponse(body) ? body.error.message : "Request failed.");
   }
 
   return body as T;
@@ -288,4 +288,8 @@ async function requestNoContent(input: RequestInfo, init?: RequestInit): Promise
 
 function readErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unexpected error.";
+}
+
+function isApiErrorResponse(value: unknown): value is ApiErrorResponse {
+  return typeof value === "object" && value !== null && "error" in value;
 }

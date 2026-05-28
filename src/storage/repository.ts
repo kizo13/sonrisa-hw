@@ -53,11 +53,11 @@ export function createRepository(db: D1Database): Repository {
   }
 
   return {
-    first<T>(sql, params = []) {
+    first<T>(sql: string, params: SqlParams = []) {
       return db.prepare(sql).bind(...params).first<T>();
     },
 
-    async all<T>(sql, params = []) {
+    async all<T>(sql: string, params: SqlParams = []) {
       const result = await db.prepare(sql).bind(...params).all<T>();
 
       return {
@@ -67,7 +67,7 @@ export function createRepository(db: D1Database): Repository {
       };
     },
 
-    async run(sql, params = []) {
+    async run(sql: string, params: SqlParams = []) {
       const result = await db.prepare(sql).bind(...params).run();
 
       return {
