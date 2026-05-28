@@ -11,7 +11,7 @@ not_found_handling = "single-page-application"
 [[d1_databases]]
 binding = "DB"
 database_name = "alert_notifications"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "bad7377a-e360-41aa-9e1e-845988668dec"
 migrations_dir = "src/storage/migrations"
 
 [vars]

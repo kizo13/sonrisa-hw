@@ -82,6 +82,32 @@ export interface NotificationAttemptRow {
   attempted_at: string;
 }
 
+export interface NotificationAttemptDetailRow {
+  id: string;
+  alert_name: string;
+  event_title: string;
+  channel: string;
+  destination_summary: string;
+  status: string;
+  message_preview: string;
+  provider_response: string | null;
+  error_message: string | null;
+  attempted_at: string;
+}
+
+export interface NotificationAttemptDetail {
+  id: string;
+  alertName: string;
+  eventTitle: string;
+  channel: ChannelKey;
+  destinationSummary: string;
+  status: NotificationStatus;
+  messagePreview: string;
+  providerResponse: string | null;
+  errorMessage: string | null;
+  attemptedAt: string;
+}
+
 export interface EventRepository {
   upsertEventCandidate(event: EventCandidate): Promise<EventCandidate>;
   listActiveAlertRulesByCategory(category: string): Promise<AlertRule[]>;
@@ -90,6 +116,7 @@ export interface EventRepository {
 export interface NotificationAttemptRepository {
   findNotificationAttempt(alertRuleId: string, eventCandidateId: string, channel: ChannelKey): Promise<NotificationAttempt | null>;
   createNotificationAttempt(attempt: NotificationAttempt): Promise<NotificationAttempt>;
+  listRecentNotificationAttempts(limit: number): Promise<NotificationAttemptDetail[]>;
 }
 
 export function createRepository(db: D1Database): Repository {
@@ -281,6 +308,30 @@ export function createNotificationAttemptRepository(repository: Repository): Not
       );
 
       return attempt;
+    },
+
+    async listRecentNotificationAttempts(limit) {
+      const result = await repository.all<NotificationAttemptDetailRow>(
+        `SELECT
+          na.id,
+          ar.name AS alert_name,
+          ec.title AS event_title,
+          na.channel,
+          na.destination_summary,
+          na.status,
+          na.message_preview,
+          na.provider_response,
+          na.error_message,
+          na.attempted_at
+        FROM notification_attempts na
+        JOIN alert_rules ar ON ar.id = na.alert_rule_id
+        JOIN event_candidates ec ON ec.id = na.event_candidate_id
+        ORDER BY na.attempted_at DESC
+        LIMIT ?`,
+        [limit]
+      );
+
+      return result.results.map(fromNotificationAttemptDetailRow);
     }
   };
 }
@@ -325,6 +376,21 @@ export function fromNotificationAttemptRow(row: NotificationAttemptRow): Notific
     messagePreview: row.message_preview,
     providerResponse: row.provider_response ?? undefined,
     errorMessage: row.error_message ?? undefined,
+    attemptedAt: row.attempted_at
+  };
+}
+
+export function fromNotificationAttemptDetailRow(row: NotificationAttemptDetailRow): NotificationAttemptDetail {
+  return {
+    id: row.id,
+    alertName: row.alert_name,
+    eventTitle: row.event_title,
+    channel: row.channel as ChannelKey,
+    destinationSummary: row.destination_summary,
+    status: row.status as NotificationStatus,
+    messagePreview: row.message_preview,
+    providerResponse: row.provider_response,
+    errorMessage: row.error_message,
     attemptedAt: row.attempted_at
   };
 }

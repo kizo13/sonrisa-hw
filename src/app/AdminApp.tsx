@@ -2,6 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import type { AlertRuleResponse } from "../domain/alertRules";
 import { DEFAULT_ALERT_FORM, toAlertRuleRequest, type AlertFormState } from "./alertForm";
+import { DEFAULT_HISTORY_LIMIT, statusClass, statusLabel } from "./historyView";
 
 interface AlertListResponse {
   alerts: AlertRuleResponse[];
@@ -9,6 +10,23 @@ interface AlertListResponse {
 
 interface AlertCreateResponse {
   alert: AlertRuleResponse;
+}
+
+interface AttemptDetail {
+  id: string;
+  alertName: string;
+  eventTitle: string;
+  channel: string;
+  destinationSummary: string;
+  status: string;
+  messagePreview: string;
+  providerResponse: string | null;
+  errorMessage: string | null;
+  attemptedAt: string;
+}
+
+interface AttemptsListResponse {
+  attempts: AttemptDetail[];
 }
 
 interface ApiErrorResponse {
@@ -24,10 +42,28 @@ export function AdminApp() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("Loading alert rules...");
   const [error, setError] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState<AttemptDetail[]>([]);
+  const [attemptsLoading, setAttemptsLoading] = useState(true);
+  const [attemptsError, setAttemptsError] = useState<string | null>(null);
 
   useEffect(() => {
     void loadAlerts();
+    void loadAttempts();
   }, []);
+
+  async function loadAttempts() {
+    setAttemptsLoading(true);
+    setAttemptsError(null);
+
+    try {
+      const response = await requestJson<AttemptsListResponse>(`/api/attempts?limit=${DEFAULT_HISTORY_LIMIT}`);
+      setAttempts(response.attempts);
+    } catch (loadError) {
+      setAttemptsError(readErrorMessage(loadError));
+    } finally {
+      setAttemptsLoading(false);
+    }
+  }
 
   async function loadAlerts() {
     setLoading(true);
@@ -247,6 +283,61 @@ export function AdminApp() {
                         Delete
                       </button>
                     </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="panel">
+        <div className="table-heading">
+          <div>
+            <p className="eyebrow">Delivery history</p>
+            <h2>Recent attempts</h2>
+          </div>
+          <button className="secondary" disabled={attemptsLoading} onClick={() => void loadAttempts()} type="button">
+            Refresh
+          </button>
+        </div>
+
+        {attemptsError ? (
+          <p className="status error">{attemptsError}</p>
+        ) : attemptsLoading ? (
+          <p className="status">Loading...</p>
+        ) : attempts.length === 0 ? (
+          <p className="empty">No notification attempts yet. Submit a demo event to trigger one.</p>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Alert</th>
+                  <th>Event</th>
+                  <th>Channel</th>
+                  <th>Destination</th>
+                  <th>Status</th>
+                  <th>Preview</th>
+                  <th>Attempted</th>
+                </tr>
+              </thead>
+              <tbody>
+                {attempts.map((attempt) => (
+                  <tr key={attempt.id}>
+                    <td>{attempt.alertName}</td>
+                    <td>{attempt.eventTitle}</td>
+                    <td>{attempt.channel}</td>
+                    <td>{attempt.destinationSummary}</td>
+                    <td>
+                      <span className={statusClass(attempt.status)}>{statusLabel(attempt.status)}</span>
+                    </td>
+                    <td>
+                      <span title={attempt.errorMessage ?? attempt.providerResponse ?? undefined}>
+                        {attempt.errorMessage ? `Error: ${attempt.errorMessage}` : attempt.messagePreview}
+                      </span>
+                    </td>
+                    <td>{new Date(attempt.attemptedAt).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

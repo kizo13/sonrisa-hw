@@ -99,14 +99,14 @@ description: "Task list for alert notifications feature"
 
 ### Tests for User Story 3
 
-- [ ] T030 [P] [US3] Add notification attempts API tests in `tests/integration/attempts-api.test.ts`
-- [ ] T031 [P] [US3] Add admin delivery history UI tests in `tests/integration/admin-history.test.ts`
+- [x] T030 [P] [US3] Add notification attempts API tests in `tests/integration/attempts-api.test.ts`
+- [x] T031 [P] [US3] Add admin delivery history UI tests in `tests/integration/admin-history.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T032 [US3] Implement recent notification attempts query in `src/storage/repository.ts`
-- [ ] T033 [US3] Implement notification attempts API route in `src/worker/routes.ts`
-- [ ] T034 [US3] Build recent delivery history table and failure display in `src/app/AdminApp.tsx`
+- [x] T032 [US3] Implement recent notification attempts query in `src/storage/repository.ts`
+- [x] T033 [US3] Implement notification attempts API route in `src/worker/routes.ts`
+- [x] T034 [US3] Build recent delivery history table and failure display in `src/app/AdminApp.tsx`
 
 **Checkpoint**: Admin view is useful for demo and debugging.
 

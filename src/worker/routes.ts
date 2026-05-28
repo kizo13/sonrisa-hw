@@ -150,6 +150,19 @@ async function dispatchApiRequest(request: Request, env: ApiEnv): Promise<Respon
     });
   }
 
+  if (url.pathname === "/api/attempts") {
+    if (request.method !== "GET") {
+      return methodNotAllowed(request.method);
+    }
+
+    const limitParam = url.searchParams.get("limit");
+    const limit = Math.min(Math.max(1, parseInt(limitParam ?? "20", 10) || 20), 100);
+    const attempts = createNotificationAttemptRepository(repository);
+    const recentAttempts = await attempts.listRecentNotificationAttempts(limit);
+
+    return jsonResponse({ attempts: recentAttempts });
+  }
+
   return notFound("API route not found.");
 }
 

@@ -205,6 +205,11 @@ th {
   background: #bfe0b7;
 }
 
+.pill.error {
+  color: #5c1a0d;
+  background: #f5c4bb;
+}
+
 .actions {
   display: flex;
   gap: 0.5rem;
