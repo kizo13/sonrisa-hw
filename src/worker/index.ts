@@ -1,4 +1,5 @@
 import { jsonResponse } from "./http";
+import { handleApiRequest } from "./routes";
 
 export interface Env {
   ASSETS: Fetcher;
@@ -16,6 +17,10 @@ export default {
         service: "alert-notifications",
         deliveryMode: env.DELIVERY_MODE
       });
+    }
+
+    if (url.pathname.startsWith("/api/")) {
+      return handleApiRequest(request, env);
     }
 
     return env.ASSETS.fetch(request);

@@ -49,17 +49,17 @@ description: "Task list for alert notifications feature"
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] Add alert validation unit tests in `tests/unit/alertRules.test.ts`
-- [ ] T013 [P] [US1] Add alert repository CRUD tests in `tests/integration/alertRepository.test.ts`
-- [ ] T014 [P] [US1] Add admin alert form behavior tests in `tests/integration/admin-alerts.test.ts`
+- [x] T012 [P] [US1] Add alert validation unit tests in `tests/unit/alertRules.test.ts`
+- [x] T013 [P] [US1] Add alert repository CRUD tests in `tests/integration/alertRepository.test.ts`
+- [x] T014 [P] [US1] Add admin alert form behavior tests in `tests/integration/admin-alerts.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Implement alert rule validation in `src/domain/alertRules.ts`
-- [ ] T016 [US1] Implement alert rule CRUD repository methods in `src/storage/repository.ts`
-- [ ] T017 [US1] Implement alert rule API routes in `src/worker/routes.ts`
-- [ ] T018 [US1] Build alert create/list UI in `src/app/AdminApp.tsx`
-- [ ] T019 [US1] Add alert disable and delete UI actions in `src/app/AdminApp.tsx`
+- [x] T015 [US1] Implement alert rule validation in `src/domain/alertRules.ts`
+- [x] T016 [US1] Implement alert rule CRUD repository methods in `src/storage/repository.ts`
+- [x] T017 [US1] Implement alert rule API routes in `src/worker/routes.ts`
+- [x] T018 [US1] Build alert create/list UI in `src/app/AdminApp.tsx`
+- [x] T019 [US1] Add alert disable and delete UI actions in `src/app/AdminApp.tsx`
 
 **Checkpoint**: User Story 1 is independently demonstrable.
 
