@@ -16,11 +16,11 @@ description: "Task list for alert notifications feature"
 
 **Purpose**: Initialize the smallest Cloudflare Worker TypeScript app needed for the vertical slice.
 
-- [ ] T001 Create TypeScript project metadata and npm scripts in `package.json`
-- [ ] T002 Configure Cloudflare Worker, static assets, and D1 binding in `wrangler.toml`
-- [ ] T003 [P] Configure TypeScript, Vitest, and linting in `tsconfig.json`, `vitest.config.ts`, and `eslint.config.js`
-- [ ] T004 [P] Create source and test directory skeletons in `src/` and `tests/`
-- [ ] T005 Create initial D1 schema migration in `src/storage/migrations/0001_initial.sql`
+- [x] T001 Create TypeScript project metadata and npm scripts in `package.json`
+- [x] T002 Configure Cloudflare Worker, static assets, and D1 binding in `wrangler.toml`
+- [x] T003 [P] Configure TypeScript, Vitest, and linting in `tsconfig.json`, `vitest.config.ts`, and `eslint.config.js`
+- [x] T004 [P] Create source and test directory skeletons in `src/` and `tests/`
+- [x] T005 Create initial D1 schema migration in `src/storage/migrations/0001_initial.sql`
 
 ---
 
