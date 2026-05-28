@@ -1,4 +1,13 @@
-import type { AlertRule, AlertCategory, ChannelKey, ThresholdType } from "../domain/types";
+import type {
+  AlertRule,
+  AlertCategory,
+  ChannelKey,
+  EventCandidate,
+  NotificationAttempt,
+  NotificationStatus,
+  Severity,
+  ThresholdType
+} from "../domain/types";
 
 export type SqlValue = string | number | null;
 export type SqlParams = readonly SqlValue[];
@@ -42,9 +51,45 @@ export interface AlertRuleRow {
 
 export interface AlertRuleRepository {
   listAlertRules(): Promise<AlertRule[]>;
+  listActiveAlertRulesByCategory(category: string): Promise<AlertRule[]>;
   createAlertRule(alert: AlertRule): Promise<AlertRule>;
   setAlertRuleActive(id: string, active: boolean, updatedAt: string): Promise<AlertRule | null>;
   deleteAlertRule(id: string): Promise<void>;
+}
+
+export interface EventCandidateRow {
+  id: string;
+  title: string;
+  source: string;
+  category: string;
+  severity: string | null;
+  numeric_value: number | null;
+  occurred_at: string;
+  url: string | null;
+  created_at: string;
+}
+
+export interface NotificationAttemptRow {
+  id: string;
+  alert_rule_id: string;
+  event_candidate_id: string;
+  channel: string;
+  destination_summary: string;
+  status: string;
+  message_preview: string;
+  provider_response: string | null;
+  error_message: string | null;
+  attempted_at: string;
+}
+
+export interface EventRepository {
+  upsertEventCandidate(event: EventCandidate): Promise<EventCandidate>;
+  listActiveAlertRulesByCategory(category: string): Promise<AlertRule[]>;
+}
+
+export interface NotificationAttemptRepository {
+  findNotificationAttempt(alertRuleId: string, eventCandidateId: string, channel: ChannelKey): Promise<NotificationAttempt | null>;
+  createNotificationAttempt(attempt: NotificationAttempt): Promise<NotificationAttempt>;
 }
 
 export function createRepository(db: D1Database): Repository {
@@ -91,6 +136,17 @@ export function createAlertRuleRepository(repository: Repository): AlertRuleRepo
     async listAlertRules() {
       const result = await repository.all<AlertRuleRow>(
         `SELECT * FROM alert_rules ORDER BY updated_at DESC`
+      );
+
+      return result.results.map(fromAlertRuleRow);
+    },
+
+    async listActiveAlertRulesByCategory(category) {
+      const result = await repository.all<AlertRuleRow>(
+        `SELECT * FROM alert_rules
+          WHERE active = 1 AND category = ?
+          ORDER BY updated_at DESC`,
+        [category]
       );
 
       return result.results.map(fromAlertRuleRow);
@@ -145,6 +201,90 @@ export function createAlertRuleRepository(repository: Repository): AlertRuleRepo
   };
 }
 
+export function createEventRepository(repository: Repository): EventRepository {
+  return {
+    async upsertEventCandidate(event) {
+      await repository.run(
+        `INSERT OR IGNORE INTO event_candidates (
+          id,
+          title,
+          source,
+          category,
+          severity,
+          numeric_value,
+          occurred_at,
+          url,
+          created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          event.id,
+          event.title,
+          event.source,
+          event.category,
+          event.severity ?? null,
+          event.numericValue ?? null,
+          event.occurredAt,
+          event.url ?? null,
+          event.createdAt
+        ]
+      );
+
+      const row = await repository.first<EventCandidateRow>(`SELECT * FROM event_candidates WHERE id = ?`, [event.id]);
+      return row ? fromEventCandidateRow(row) : event;
+    },
+
+    async listActiveAlertRulesByCategory(category) {
+      const alertRepository = createAlertRuleRepository(repository);
+      return alertRepository.listActiveAlertRulesByCategory(category);
+    }
+  };
+}
+
+export function createNotificationAttemptRepository(repository: Repository): NotificationAttemptRepository {
+  return {
+    async findNotificationAttempt(alertRuleId, eventCandidateId, channel) {
+      const row = await repository.first<NotificationAttemptRow>(
+        `SELECT * FROM notification_attempts
+          WHERE alert_rule_id = ? AND event_candidate_id = ? AND channel = ?`,
+        [alertRuleId, eventCandidateId, channel]
+      );
+
+      return row ? fromNotificationAttemptRow(row) : null;
+    },
+
+    async createNotificationAttempt(attempt) {
+      await repository.run(
+        `INSERT INTO notification_attempts (
+          id,
+          alert_rule_id,
+          event_candidate_id,
+          channel,
+          destination_summary,
+          status,
+          message_preview,
+          provider_response,
+          error_message,
+          attempted_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          attempt.id,
+          attempt.alertRuleId,
+          attempt.eventCandidateId,
+          attempt.channel,
+          attempt.destinationSummary,
+          attempt.status,
+          attempt.messagePreview,
+          attempt.providerResponse ?? null,
+          attempt.errorMessage ?? null,
+          attempt.attemptedAt
+        ]
+      );
+
+      return attempt;
+    }
+  };
+}
+
 export function fromAlertRuleRow(row: AlertRuleRow): AlertRule {
   return {
     id: row.id,
@@ -157,5 +297,34 @@ export function fromAlertRuleRow(row: AlertRuleRow): AlertRule {
     active: row.active === 1,
     createdAt: row.created_at,
     updatedAt: row.updated_at
+  };
+}
+
+export function fromEventCandidateRow(row: EventCandidateRow): EventCandidate {
+  return {
+    id: row.id,
+    title: row.title,
+    source: row.source,
+    category: row.category,
+    severity: row.severity ? (row.severity as Severity) : undefined,
+    numericValue: row.numeric_value ?? undefined,
+    occurredAt: row.occurred_at,
+    url: row.url ?? undefined,
+    createdAt: row.created_at
+  };
+}
+
+export function fromNotificationAttemptRow(row: NotificationAttemptRow): NotificationAttempt {
+  return {
+    id: row.id,
+    alertRuleId: row.alert_rule_id,
+    eventCandidateId: row.event_candidate_id,
+    channel: row.channel as ChannelKey,
+    destinationSummary: row.destination_summary,
+    status: row.status as NotificationStatus,
+    messagePreview: row.message_preview,
+    providerResponse: row.provider_response ?? undefined,
+    errorMessage: row.error_message ?? undefined,
+    attemptedAt: row.attempted_at
   };
 }

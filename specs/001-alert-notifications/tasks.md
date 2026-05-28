@@ -73,19 +73,19 @@ description: "Task list for alert notifications feature"
 
 ### Tests for User Story 2
 
-- [ ] T020 [P] [US2] Add event matching unit tests in `tests/unit/matcher.test.ts`
-- [ ] T021 [P] [US2] Add duplicate suppression tests in `tests/unit/notifications.test.ts`
-- [ ] T022 [P] [US2] Add fake channel dispatch tests in `tests/unit/channels.test.ts`
+- [x] T020 [P] [US2] Add event matching unit tests in `tests/unit/matcher.test.ts`
+- [x] T021 [P] [US2] Add duplicate suppression tests in `tests/unit/notifications.test.ts`
+- [x] T022 [P] [US2] Add fake channel dispatch tests in `tests/unit/channels.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T023 [P] [US2] Implement event candidate validation in `src/domain/events.ts`
-- [ ] T024 [US2] Implement alert/event matcher in `src/domain/matcher.ts`
-- [ ] T025 [US2] Implement notification orchestration and duplicate checks in `src/domain/notifications.ts`
-- [ ] T026 [US2] Implement demo event evaluation route in `src/worker/routes.ts`
-- [ ] T027 [P] [US2] Implement Slack webhook adapter behind channel contract in `src/channels/slack.ts`
-- [ ] T028 [P] [US2] Implement fake-first email adapter behind channel contract in `src/channels/email.ts`
-- [ ] T029 [US2] Persist notification attempts and provider summaries in `src/storage/repository.ts`
+- [x] T023 [P] [US2] Implement event candidate validation in `src/domain/events.ts`
+- [x] T024 [US2] Implement alert/event matcher in `src/domain/matcher.ts`
+- [x] T025 [US2] Implement notification orchestration and duplicate checks in `src/domain/notifications.ts`
+- [x] T026 [US2] Implement demo event evaluation route in `src/worker/routes.ts`
+- [x] T027 [P] [US2] Implement Slack webhook adapter behind channel contract in `src/channels/slack.ts`
+- [x] T028 [P] [US2] Implement fake-first email adapter behind channel contract in `src/channels/email.ts`
+- [x] T029 [US2] Persist notification attempts and provider summaries in `src/storage/repository.ts`
 
 **Checkpoint**: User Story 2 proves the smallest end-to-end alerting loop.
 

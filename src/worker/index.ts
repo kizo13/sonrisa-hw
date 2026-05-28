@@ -5,6 +5,7 @@ export interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
   DELIVERY_MODE: "fake" | "real";
+  SLACK_WEBHOOK_URL?: string;
 }
 
 export default {
